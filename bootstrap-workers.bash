@@ -103,6 +103,8 @@ done
 
 # Approve TLS Certificate requests
 
-gcloudexec controller0 'kubectl get csr'
+gcloud compute scp approve-csrs.bash controller0:~/
+gcloudexec controller0 'chmod a+x approve-csrs.bash; ~/approve-csrs.bash'
+gcloudexec controller0 'kubectl get nodes'
 
 
