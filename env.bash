@@ -1,1 +1,0 @@
-export PROJECT_ID=centered-seat-178501

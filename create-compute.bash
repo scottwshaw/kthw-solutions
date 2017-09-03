@@ -1,7 +1,3 @@
-gcloud config set compute/region us-central1
-
-gcloud config set compute/zone us-central1-f
-
 gcloud compute networks subnets create kubernetes \
   --network kubernetes-the-hard-way \
   --range 10.240.0.0/24 \
