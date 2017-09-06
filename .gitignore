@@ -3,4 +3,5 @@
 *.json
 *.kubeconfig
 *.csr
-#*
+*.yaml
+*#
