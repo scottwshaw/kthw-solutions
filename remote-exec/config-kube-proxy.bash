@@ -7,10 +7,9 @@ Description=Kubernetes Kube Proxy
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 
 [Service]
-ExecStart=/usr/bin/kube-proxy \\
+ExecStart=/usr/local/bin/kube-proxy \\
   --cluster-cidr=10.200.0.0/16 \\
-  --masquerade-all=true \\
-  --kubeconfig=/var/lib/kube-proxy/kube-proxy.kubeconfig \\
+  --kubeconfig=/var/lib/kube-proxy/kubeconfig \\
   --proxy-mode=iptables \\
   --v=2
 Restart=on-failure
@@ -19,5 +18,3 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
-
-sudo mv kube-proxy.service /etc/systemd/system/kube-proxy.service

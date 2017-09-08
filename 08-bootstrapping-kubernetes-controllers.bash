@@ -38,6 +38,51 @@ for host in controller-0 controller-1 controller-2; do
     gcloudexec ${host} 'kubectl get componentstatuses'
 done
 
+# Create external load balancer network entities
+
+gcloud compute http-health-checks create kube-apiserver-health-check \
+       --description "Kubernetes API Server Health Check" \
+       --port 8080 \
+       --request-path /healthz
+
+gcloud compute target-pools create kubernetes-target-pool \
+       --http-health-check=kube-apiserver-health-check
+
+gcloud compute target-pools add-instances kubernetes-target-pool \
+       --instances controller-0,controller-1,controller-2
+
+KUBERNETES_PUBLIC_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
+				   --region $(gcloud config get-value compute/region) \
+				   --format 'value(name)')
+
+gcloud compute forwarding-rules create kubernetes-forwarding-rule \
+       --address ${KUBERNETES_PUBLIC_ADDRESS} \
+       --ports 6443 \
+       --region $(gcloud config get-value compute/region) \
+       --target-pool kubernetes-target-pool
+
+# Verify load balancer
+
+KUBERNETES_PUBLIC_IP_ADDRESS=$(gcloud compute addresses describe kubernetes-the-hard-way \
+				      --region $(gcloud config get-value compute/region) \
+				      --format 'value(address)')
+
+CORRECT_OUTPUT="{ \"major\": \"1\", \
+		  \"minor\": \"7\", \
+		  \"gitVersion\": \"v1.7.4\", \
+		  \"gitCommit\": \"793658f2d7ca7f064d2bdf606519f9fe1229c381\", \
+		  \"gitTreeState\": \"clean\", \
+		  \"buildDate\": \"2017-08-17T08:30:51Z\", \
+		  \"goVersion\": \"go1.8.3\", \
+		  \"compiler\": \"gc\",\
+		  \"platform\": \"linux/amd64\" }"
+
+echo you should see the following output:
+echo $CORRECT_OUTPUT
+
+curl --cacert ca.pem https://${KUBERNETES_PUBLIC_IP_ADDRESS}:6443/version
+
+
 
 
 
