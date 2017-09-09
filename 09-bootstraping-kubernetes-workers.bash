@@ -88,9 +88,7 @@ for host in worker-0 worker-1 worker-2; do
 		  'sudo systemctl start crio kubelet kube-proxy'
 done
 
-gcloudexecall controller-0 \
-	      'gcloud compute ssh controller-0' \
-	      'kubectl get nodes'
+gcloudexecall controller-0 'kubectl get nodes'
 
 
 
