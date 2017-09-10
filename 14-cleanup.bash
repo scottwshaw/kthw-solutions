@@ -6,7 +6,9 @@ gcloud -q compute instances delete \
 
 gcloud -q compute forwarding-rules delete kubernetes-forwarding-rule \
        --region $(gcloud config get-value compute/region)
+
 gcloud -q compute target-pools delete kubernetes-target-pool
+
 gcloud -q compute http-health-checks delete kube-apiserver-health-check
 
 gcloud -q compute addresses delete kubernetes-the-hard-way
@@ -15,6 +17,11 @@ gcloud -q compute firewall-rules delete \
   kubernetes-the-hard-way-allow-internal \
   kubernetes-the-hard-way-allow-external \
   kubernetes-the-hard-way-allow-health-checks
+
+gcloud -q compute routes delete \
+  kubernetes-route-10-200-0-0-24 \
+  kubernetes-route-10-200-1-0-24 \
+  kubernetes-route-10-200-2-0-24
 
 gcloud -q compute networks subnets delete kubernetes
 
